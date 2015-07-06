@@ -25,7 +25,6 @@ Game::Game(int width, int height)
   /* Allocate space for pointers to particle objects, one for each pixel on the screen. */
   this->particles = (Particle**) calloc(sizeof(Particle*),
 				        (size_t) (this->screenWidth * this->screenHeight));
-
 }
 
 Game::~Game()
@@ -57,7 +56,27 @@ void Game::update()
   /* Move paticles in each row except the bottom (since it's blank). */
   for (int i = this->screenWidth * (this->screenHeight - 1); i >= 0; i--) {
     if (particles[i] && particles[i]->movable) {
-      particles[i + this->screenWidth] = particles[i];
+      
+      if (!particles[i + this->screenWidth]) {
+	
+	particles[i + this->screenWidth] = particles[i];
+	particles[i] = nullptr;
+	
+      } else if (!particles[i + screenWidth - 1]
+	    && !particles[i + screenWidth + 1]) {
+	
+	  if (rand() % 2 == 1) {
+	    particles[i + screenWidth + 1] = particles[i];
+	  } else {
+	    particles[i + screenWidth - 1] = particles[i];
+	  }
+	  particles[i] = nullptr;
+	} 
+    } else if (!particles[i + screenWidth - 1]) {
+      particles[i + screenWidth - 1] = particles[i];
+      particles[i] = nullptr;
+    } else if (!particles[i + screenWidth + 1]) {
+      particles[i + screenWidth + 1] = particles[i];      
       particles[i] = nullptr;
     }
   }
@@ -68,8 +87,8 @@ void Game::update()
   // while (t < this->screenWidth) { 
   //      t += rand() % 50;
       particles[t] = new TestParticle(255,
-				      255,
-				      color++, true);
+  				      255,
+  				      color++, true);
       //    }
 
   /* Flutter each particle */
@@ -83,26 +102,21 @@ void Game::update()
   /* Draw each particle on the screen. */
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
   SDL_RenderClear(renderer);
-  SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-  // for (int i = 0; i < screenHeight * screenWidth; i++) {
-  //   if (this->particles[i]) {
-  //     SDL_SetRenderDrawColor(renderer,
-  // 			     particles[i]->r,
-  // 			     particles[i]->b,
-  // 			     particles[i]->g,
-  // 			     particles[i]->a);
-  //     SDL_RenderDrawPoint(this->renderer, i % screenWidth, i / screenHeight);
-  //   }
-  // }
-
-  SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+  int i = 0; // so the offset doesn't have to be calculated on each loop
   for (int y = 0; y < this->screenHeight; y++) {
     for (int x = 0; x < this->screenWidth; x++) {
-      if (this->particles[y * screenHeight + x]) {
+      if (this->particles[i]) {
+	SDL_SetRenderDrawColor(renderer,
+			       particles[i]->r,
+			       particles[i]->b,
+			       particles[i]->g,
+			       particles[i]->a);
 	SDL_RenderDrawPoint(this->renderer, x , y);
       }
+      i++;
     }
   }
+
   SDL_RenderPresent(renderer);
   SDL_Delay(1);
 }
@@ -128,9 +142,8 @@ void Game::deletetmp(int x, int y)
   for (int xi = x - 5; xi < x + 5; xi++) {
     for (int yi = y - 5; yi < y + 5; yi++) {
       if (xi > 0 && yi > 0 && xi < this->screenWidth && yi < this->screenHeight) {
-	int offset = yi * 600 + xi;
-	if (particles[offset]) {
-	  delete this->particles[offset];
+	int offset = yi * this->screenWidth + xi;
+	if (!particles[offset]) {
 	  particles[offset] = new TestParticle(255, 255, 255, false);
 	}
       }
