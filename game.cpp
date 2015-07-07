@@ -55,41 +55,50 @@ void Game::update()
 
   /* Move paticles in each row except the bottom (since it's blank). */
   for (int i = this->screenWidth * (this->screenHeight - 1); i >= 0; i--) {
+
     if (particles[i] && particles[i]->movable) {
-      
-      if (!particles[i + this->screenWidth]) {
-	
-	particles[i + this->screenWidth] = particles[i];
-	particles[i] = nullptr;
-	
-      } else if (!particles[i + screenWidth - 1]
-	    && !particles[i + screenWidth + 1]) {
-	
+
+      /* Move down if possible. */
+      if (!particles[i + this->screenWidth])
+	{
+	  particles[i + this->screenWidth] = particles[i];
+	  particles[i] = nullptr;
+	}
+      /* Otherwise, if there is no particle  on etihre side, randomly flutter
+       * to the left or right. */
+      else if (!particles[i + screenWidth - 1]
+	       && !particles[i + screenWidth + 1])
+	{
 	  if (rand() % 2 == 1) {
 	    particles[i + screenWidth + 1] = particles[i];
 	  } else {
 	    particles[i + screenWidth - 1] = particles[i];
 	  }
 	  particles[i] = nullptr;
-	} 
-    } else if (!particles[i + screenWidth - 1]) {
-      particles[i + screenWidth - 1] = particles[i];
-      particles[i] = nullptr;
-    } else if (!particles[i + screenWidth + 1]) {
-      particles[i + screenWidth + 1] = particles[i];      
-      particles[i] = nullptr;
+	}
+      /* Move left if possible. */
+      else if (!particles[i + screenWidth - 1])
+	{
+	  particles[i + screenWidth - 1] = particles[i];
+	  particles[i] = nullptr;
+	}
+      /* Move right if possible. */
+      else if (!particles[i + screenWidth + 1])
+	{
+	  particles[i + screenWidth + 1] = particles[i];      
+	  particles[i] = nullptr;
+	}
     }
   }
 
   /* Create some particles */
-  int t = this->screenWidth/3;
-  static int color = 0;
-  // while (t < this->screenWidth) { 
-  //      t += rand() % 50;
-      particles[t] = new TestParticle(255,
-  				      255,
-  				      color++, true);
-      //    }
+  int t = 0;
+  while (t < this->screenWidth) { 
+        t += rand() % 50;
+	particles[t] = new TestParticle(rand() % 256,
+					rand() % 256,
+					rand() % 256, true);
+  }
 
   /* Flutter each particle */
   for (int i = 0; i < screenWidth * screenHeight; i++) {
@@ -137,15 +146,31 @@ void Game::flutter(int i)
   
 }
 
-void Game::deletetmp(int x, int y)
+void Game::rightClick(int x, int y)
 {
   for (int xi = x - 5; xi < x + 5; xi++) {
     for (int yi = y - 5; yi < y + 5; yi++) {
       if (xi > 0 && yi > 0 && xi < this->screenWidth && yi < this->screenHeight) {
 	int offset = yi * this->screenWidth + xi;
-	if (!particles[offset]) {
-	  particles[offset] = new TestParticle(255, 255, 255, false);
+	if (particles[offset]) {
+	  delete particles[offset];
+	  particles[offset] = nullptr;
 	}
+      }
+    }
+  }  
+}
+
+void Game::leftClick(int x, int y)
+{
+  for (int xi = x - 5; xi < x + 5; xi++) {
+    for (int yi = y - 5; yi < y + 5; yi++) {
+      if (xi > 0 && yi > 0 && xi < this->screenWidth && yi < this->screenHeight) {
+	int offset = yi * this->screenWidth + xi;
+	if (particles[offset]) {
+	  delete particles[offset];
+	}
+	particles[offset] = new TestParticle(255, 255, 255, false);
       }
     }
   }
@@ -155,23 +180,44 @@ bool Game::run()
 {
   SDL_Event e;
 
-  
-  while (SDL_PollEvent(&e) != 0) {
-    if (e.type == SDL_QUIT) {
-      return false;
-    } else if (e.type == SDL_MOUSEBUTTONDOWN) {
-      mouseDown = true;
-    } else if (e.type == SDL_MOUSEBUTTONUP) {
-      mouseDown = false;
-    }
-  }
+  /* Keep track of mouse state. */
+  static bool leftDown = false;
+  static bool rightDown = false;
 
-  if (mouseDown) {
-    int x,y;
-    SDL_GetMouseState(&x, &y);
-    this->deletetmp(x, y);
+  /* Process each event. */
+  while (SDL_PollEvent(&e) != 0) {
+    
+    if (e.type == SDL_QUIT)
+      {
+	return false;
+      }
+    else if (e.type == SDL_MOUSEBUTTONDOWN)
+      {
+	int mask = SDL_GetMouseState(NULL, NULL);
+	if (mask & SDL_BUTTON_LEFT) {
+	  leftDown = true;
+	} else if (mask & SDL_BUTTON_X1) {
+	  rightDown = true;
+	}
+      }
+    else if (e.type == SDL_MOUSEBUTTONUP)
+      {
+	/* Reset everything if a button comes up. */
+	leftDown = false;
+	rightDown = false;
+      }
   }
   
+  if (leftDown || rightDown)
+    {
+      int x, y;
+      SDL_GetMouseState(&x, &y);
+    
+      if (leftDown)
+	this->leftClick(x, y);
+      if (rightDown)
+	this->rightClick(x, y);
+    }
   
   this->update();
 

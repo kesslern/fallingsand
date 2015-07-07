@@ -13,8 +13,10 @@ public:
   bool run();
   
 private:
-  void deletetmp(int x, int y);
-  bool mouseDown = false;
+  /* Create walls. */
+  void leftClick(int x, int y);
+  /* Delete particles. */
+  void rightClick(int x, int y);
   int screenWidth;
   int screenHeight;
   SDL_Window* window;
