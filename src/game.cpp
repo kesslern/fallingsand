@@ -1,7 +1,8 @@
 #include <SDL2/SDL.h>
 #include <random>
 #include "game.h"
-#include "testparticle.h"
+#include "wall.h"
+#include "water.h"
 
 #define FLUTTER 3
 
@@ -95,9 +96,7 @@ void Game::update()
   int t = 0;
   while (t < this->screenWidth) { 
         t += rand() % 50;
-	particles[t] = new TestParticle(rand() % 256,
-					rand() % 256,
-					rand() % 256, true);
+	particles[t] = new Water();
   }
 
   /* Flutter each particle */
@@ -117,8 +116,8 @@ void Game::update()
       if (this->particles[i]) {
 	SDL_SetRenderDrawColor(renderer,
 			       particles[i]->r,
-			       particles[i]->b,
 			       particles[i]->g,
+			       particles[i]->b,
 			       particles[i]->a);
 	SDL_RenderDrawPoint(this->renderer, x , y);
       }
@@ -170,7 +169,7 @@ void Game::leftClick(int x, int y)
 	if (particles[offset]) {
 	  delete particles[offset];
 	}
-	particles[offset] = new TestParticle(255, 255, 255, false);
+	particles[offset] = new Wall();
       }
     }
   }
