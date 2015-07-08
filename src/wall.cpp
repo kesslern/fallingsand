@@ -8,3 +8,8 @@ Wall::Wall()
   this->g = 220;
   this->b = 220;
 }
+
+void Wall::move(int i)
+{
+  return;
+}

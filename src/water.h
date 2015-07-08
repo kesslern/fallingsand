@@ -7,6 +7,7 @@ class Water : public Particle
 {
  public:
   Water();
+  void move(int i);
 };
 
 #endif

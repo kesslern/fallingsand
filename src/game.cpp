@@ -3,6 +3,7 @@
 #include "game.h"
 #include "wall.h"
 #include "water.h"
+#include "particle.h"
 
 #define FLUTTER 3
 
@@ -26,6 +27,9 @@ Game::Game(int width, int height)
   /* Allocate space for pointers to particle objects, one for each pixel on the screen. */
   this->particles = (Particle**) calloc(sizeof(Particle*),
 				        (size_t) (this->screenWidth * this->screenHeight));
+
+  /* This reference needs to be initialized so particles have information needed to move. */
+  Particle::game = this;
 }
 
 Game::~Game()
@@ -56,40 +60,8 @@ void Game::update()
 
   /* Move paticles in each row except the bottom (since it's blank). */
   for (int i = this->screenWidth * (this->screenHeight - 1); i >= 0; i--) {
-
-    if (particles[i] && particles[i]->movable) {
-
-      /* Move down if possible. */
-      if (!particles[i + this->screenWidth])
-	{
-	  particles[i + this->screenWidth] = particles[i];
-	  particles[i] = nullptr;
-	}
-      /* Otherwise, if there is no particle  on etihre side, randomly flutter
-       * to the left or right. */
-      else if (!particles[i + screenWidth - 1]
-	       && !particles[i + screenWidth + 1])
-	{
-	  if (rand() % 2 == 1) {
-	    particles[i + screenWidth + 1] = particles[i];
-	  } else {
-	    particles[i + screenWidth - 1] = particles[i];
-	  }
-	  particles[i] = nullptr;
-	}
-      /* Move left if possible. */
-      else if (!particles[i + screenWidth - 1])
-	{
-	  particles[i + screenWidth - 1] = particles[i];
-	  particles[i] = nullptr;
-	}
-      /* Move right if possible. */
-      else if (!particles[i + screenWidth + 1])
-	{
-	  particles[i + screenWidth + 1] = particles[i];      
-	  particles[i] = nullptr;
-	}
-    }
+    if (particles[i])
+      particles[i]->move(i);
   }
 
   /* Create some particles */

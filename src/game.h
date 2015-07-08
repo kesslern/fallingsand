@@ -1,7 +1,8 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "particle.h"
+#include <SDL2/SDL.h>
+class Particle;
 
 class Game
 {
@@ -11,16 +12,17 @@ public:
   void update();
   void flutter(int i);
   bool run();
-  
+
+  int screenWidth;
+  int screenHeight;
+  Particle** particles;
+ 
 private:
   /* Create walls. */
   void leftClick(int x, int y);
   /* Delete particles. */
   void rightClick(int x, int y);
-  int screenWidth;
-  int screenHeight;
-  SDL_Window* window;
-  Particle** particles;
+   SDL_Window* window;
   SDL_Renderer* renderer;
 };
 

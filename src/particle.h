@@ -2,10 +2,15 @@
 #define PARTICLE_H
 
 #include <SDL2/SDL.h>
+class Game;
 
 class Particle
 {
 public:
+  virtual void move(int i) = 0;
+  static Game* game;
+  virtual ~Particle();
+  
   /* Particle properties. */
   bool movable;
   bool liquid;
