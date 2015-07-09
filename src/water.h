@@ -5,9 +5,13 @@
 
 class Water : public Particle
 {
- public:
+public:
   Water(int idx);
   void move();
+
+private:
+  bool searchAndMoveDownLeft();
+  bool searchAndMoveDownRight();
 };
 
 #endif

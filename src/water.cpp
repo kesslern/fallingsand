@@ -2,6 +2,8 @@
 #include "game.h"
 #include "particle.h"
 
+#define MAX_DIST_MOVE 8
+
 Water::Water(int idx)
 {
   this->idx = idx;
@@ -55,6 +57,87 @@ void Water::move()
       particles[idx] = nullptr;
       this->idx = idx + screenWidth + 1;
     }
+  /* If we're above a body of water, absorb into it. */
+  else if (!particles[idx - screenWidth]
+	   && particles[idx + screenWidth]
+	   && particles[idx + screenWidth]->liquid)
+    {
+      if (searchAndMoveDownLeft()) {}
+      else {searchAndMoveDownRight();}
+    }
 }
 
+bool Water::searchAndMoveDownLeft()
+{
+  int screenWidth = Particle::game->screenWidth;
+  Particle** particles = Particle::game->particles;
   
+  /* Search until the end of the screen until we run out of liquid
+   * to absorb into or we find an empty place to go. */
+  for (int searchX = 1;
+       searchX <= idx % screenWidth && searchX <= MAX_DIST_MOVE;
+       searchX++) 
+    {
+      if (!particles[idx + screenWidth - searchX])
+	{
+	 particles[idx + screenWidth - searchX] = this;
+	 particles[idx] = nullptr;
+	  this->idx = idx + screenWidth - searchX;
+	  return true;
+	}
+      /* Check another row down too... it happens. */
+      else if (!particles[idx + screenWidth * 2 - searchX])
+	{
+	  particles[idx + screenWidth * 2 - searchX] = this;
+	  particles[idx] = nullptr;
+	  this->idx = idx + screenWidth * 2 - searchX;
+	  return true;
+	}
+      // Stop searching if it's the end of the liquid pool
+      else if (particles[idx + screenWidth - searchX]
+	       && !particles[idx + screenWidth - searchX]->liquid)
+	{
+	  break;
+	}
+    }
+  
+  return false;
+}
+
+bool Water::searchAndMoveDownRight()
+{
+  const int screenWidth = Particle::game->screenWidth;
+  Particle** particles = Particle::game->particles;
+  
+  /* Search until the end of the screen until we run out of liquid
+   * to absorb into or we find an empty place to go. */
+  for (int searchX = 1;
+       searchX <= screenWidth - idx % screenWidth && searchX <= MAX_DIST_MOVE;
+       searchX++) 
+    {
+      if (!particles[idx + screenWidth + searchX])
+	{
+	 particles[idx + screenWidth + searchX] = this;
+	 particles[idx] = nullptr;
+	  this->idx = idx + screenWidth + searchX;
+	  return true;
+	}
+      /* Check another row down too... it happens. */
+      else if (!particles[idx + screenWidth * 2 + searchX])
+	{
+	 particles[idx + screenWidth * 2 + searchX] = this;
+	 particles[idx] = nullptr;
+	  this->idx = idx + screenWidth * 2 + searchX;
+	  return true;
+	}
+      // Stop searching if it's the end of the liquid pool
+      else if (particles[idx + screenWidth + searchX]
+	       && !particles[idx + screenWidth + searchX]->liquid)
+	{
+	  break;
+	}
+    }
+  
+  return false;
+
+}
