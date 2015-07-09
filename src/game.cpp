@@ -59,11 +59,26 @@ void Game::update()
   }
 
   /* Move paticles in each row except the bottom (since it's blank). */
-  for (int i = this->screenWidth * (this->screenHeight - 1); i >= 0; i--) {
-    if (particles[i])
-      particles[i]->move(i);
+  static bool loopDirectionToggle = false;
+
+  if (loopDirectionToggle) {
+    for (int i = this->screenWidth * (this->screenHeight - 1); i >= 0; i--) {
+      if (particles[i])
+	particles[i]->move(i);
+    }
+  } else {
+    for (int y = screenHeight - 1; y >= 0; y--) {
+      int offset = y * screenWidth;
+      for (int x = 0; x < screenWidth; x++) {
+	if (particles[offset + x])
+	  particles[offset + x]->move(offset + x);
+	  
+      }
+    }
   }
 
+  loopDirectionToggle = !loopDirectionToggle;
+  
   /* Create some particles */
   int t = 0;
   while (t < this->screenWidth) { 
