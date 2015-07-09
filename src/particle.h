@@ -7,9 +7,12 @@ class Game;
 class Particle
 {
 public:
-  virtual void move(int i) = 0;
+  virtual void move() = 0;
   static Game* game;
   virtual ~Particle();
+
+  /* Location of the particle in the particles array in the game. */
+  int idx;
   
   /* Particle properties. */
   bool movable;

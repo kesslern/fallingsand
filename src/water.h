@@ -6,8 +6,8 @@
 class Water : public Particle
 {
  public:
-  Water();
-  void move(int i);
+  Water(int idx);
+  void move();
 };
 
 #endif

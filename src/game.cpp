@@ -3,9 +3,8 @@
 #include "game.h"
 #include "wall.h"
 #include "water.h"
+#include "sand.h"
 #include "particle.h"
-
-#define FLUTTER 3
 
 Game::Game(int width, int height)
 {
@@ -64,14 +63,14 @@ void Game::update()
   if (loopDirectionToggle) {
     for (int i = this->screenWidth * (this->screenHeight - 1); i >= 0; i--) {
       if (particles[i])
-	particles[i]->move(i);
+	particles[i]->move();
     }
   } else {
     for (int y = screenHeight - 1; y >= 0; y--) {
       int offset = y * screenWidth;
       for (int x = 0; x < screenWidth; x++) {
 	if (particles[offset + x])
-	  particles[offset + x]->move(offset + x);
+	  particles[offset + x]->move();
 	  
       }
     }
@@ -83,16 +82,11 @@ void Game::update()
   int t = 0;
   while (t < this->screenWidth) { 
         t += rand() % 50;
-	particles[t] = new Water();
+	if (rand() % 2 == 1) 
+	  particles[t] = new Water(t);
+	else
+	  particles[t] = new Sand(t);
   }
-
-  /* Flutter each particle */
-  for (int i = 0; i < screenWidth * screenHeight; i++) {
-    if (particles[i] && particles[i]->movable) {
-      flutter(i);
-    }
-  }
-  
 
   /* Draw each particle on the screen. */
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -114,22 +108,6 @@ void Game::update()
 
   SDL_RenderPresent(renderer);
   SDL_Delay(1);
-}
-
-void Game::flutter(int i)
-{
-  if ((rand() % 100) <= FLUTTER
-      && particles[i-1] == nullptr) {
-    particles[i-1] = particles[i];
-    particles[i] = nullptr;
-  }
-  else if ((rand() % 100) <= FLUTTER
-	&& particles[i+1] == nullptr) {
-    particles[i+1] = particles[i];
-    particles[i] = nullptr;
-  }
-
-  
 }
 
 void Game::rightClick(int x, int y)
@@ -156,7 +134,7 @@ void Game::leftClick(int x, int y)
 	if (particles[offset]) {
 	  delete particles[offset];
 	}
-	particles[offset] = new Wall();
+	particles[offset] = new Wall(offset);
       }
     }
   }

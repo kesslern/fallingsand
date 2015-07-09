@@ -1,7 +1,8 @@
 #include "wall.h"
 
-Wall::Wall()
+Wall::Wall(int idx)
 {
+  this->idx = idx;
   this->movable = false;
   this->liquid = false;
   this->r = 220;
@@ -9,7 +10,7 @@ Wall::Wall()
   this->b = 220;
 }
 
-void Wall::move(int i)
+void Wall::move()
 {
   return;
 }

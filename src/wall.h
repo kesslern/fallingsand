@@ -6,8 +6,8 @@
 class Wall : public Particle
 {
  public:
-  Wall();
-  void move(int i);
+  Wall(int idx);
+  void move();
 };
 
 #endif
