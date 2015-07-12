@@ -22,10 +22,15 @@ private:
   void leftClick(int x, int y);
   /* Delete particles. */
   void rightClick(int x, int y);
+  /* Calculate the FPS at some given interval. */
   void calculateFps();
+  /* Process mouse buttons and key presses. */
+  void processEvents();
+  
   SDL_Window* window;
   SDL_Renderer* renderer;
   Uint32 fps;
+  bool quit = false;
 };
 
 #endif

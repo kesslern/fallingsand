@@ -162,7 +162,7 @@ void Game::calculateFps()
   frames++;
 }
 
-bool Game::run()
+void Game::processEvents()
 {
   SDL_Event e;
 
@@ -175,7 +175,7 @@ bool Game::run()
     
     if (e.type == SDL_QUIT)
       {
-	return false;
+	this->quit = true;
       }
     else if (e.type == SDL_MOUSEBUTTONDOWN)
       {
@@ -205,9 +205,13 @@ bool Game::run()
       if (rightDown)
 	this->rightClick(x, y);
     }
+}
 
+bool Game::run()
+{
+  this->processEvents();
   this->calculateFps();
   this->update();
 
-  return true;
+  return !this->quit;
 }
