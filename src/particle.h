@@ -17,6 +17,7 @@ public:
   /* Particle properties. */
   bool movable;
   bool liquid;
+  
   /* Color of the particle. */
   Uint8 r;
   Uint8 b;
