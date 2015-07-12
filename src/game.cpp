@@ -66,18 +66,10 @@ void Game::update()
 
   /* Create some particles */
   int t = 0;
-  while (t < this->screenWidth) { 
-        t += rand() % 50;
+  while (t < this->screenWidth - 50) { 
+        t += rand() % 50 + 1;
 	particles[t] = new Water();
   }
-
-  /* Flutter each particle */
-  for (int i = 0; i < screenWidth * screenHeight; i++) {
-    if (particles[i] && particles[i]->movable) {
-      flutter(i);
-    }
-  }
-  
 
   /* Draw each particle on the screen. */
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -99,22 +91,6 @@ void Game::update()
 
   SDL_RenderPresent(renderer);
   SDL_Delay(1);
-}
-
-void Game::flutter(int i)
-{
-  if ((rand() % 100) <= FLUTTER
-      && particles[i-1] == nullptr) {
-    particles[i-1] = particles[i];
-    particles[i] = nullptr;
-  }
-  else if ((rand() % 100) <= FLUTTER
-	&& particles[i+1] == nullptr) {
-    particles[i+1] = particles[i];
-    particles[i] = nullptr;
-  }
-
-  
 }
 
 void Game::rightClick(int x, int y)
