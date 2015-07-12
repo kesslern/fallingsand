@@ -8,10 +8,6 @@ class Water : public Particle
 public:
   Water(int idx);
   void move();
-
-private:
-  bool searchAndMoveDownLeft();
-  bool searchAndMoveDownRight();
 };
 
 #endif
