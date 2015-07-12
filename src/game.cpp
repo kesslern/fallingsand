@@ -60,12 +60,17 @@ void Game::update()
   /* Move paticles in each row except the bottom (since it's blank). */
   static bool loopDirectionToggle = false;
 
-  if (loopDirectionToggle) {
-    for (int i = this->screenWidth * (this->screenHeight - 1); i >= 0; i--) {
-      if (particles[i])
-	particles[i]->move();
+  /* Just loop backwards through the array of particles half of the time. */
+  if (loopDirectionToggle)
+    {
+      for (int i = this->screenWidth * (this->screenHeight - 1); i >= 0; i--) {
+	if (particles[i])
+	  particles[i]->move();
+      }
     }
-  } else {
+  /* Otherwise, move right to left across each row from bottom to top. */
+  else
+    {
     for (int y = screenHeight - 1; y >= 0; y--) {
       int offset = y * screenWidth;
       for (int x = 0; x < screenWidth; x++) {
@@ -75,7 +80,7 @@ void Game::update()
       }
     }
   }
-
+  /* Swap directions on every other loop. */
   loopDirectionToggle = !loopDirectionToggle;
   
   /* Create some particles */
