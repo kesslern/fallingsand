@@ -86,6 +86,7 @@ void Game::update()
 	  particles[t] = new Water(t);
 	else
 	  particles[t] = new Sand(t);
+  }
 
   /* Draw each particle on the screen. */
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -138,6 +139,7 @@ void Game::leftClick(int x, int y)
     }
   }
 }
+
 
 void Game::calculateFps()
 {
