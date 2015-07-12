@@ -155,6 +155,9 @@ bool Game::run()
   static bool leftDown = false;
   static bool rightDown = false;
 
+  static Uint32 startTime = SDL_GetTicks();
+  static Uint32 frames = 0;
+  
   /* Process each event. */
   while (SDL_PollEvent(&e) != 0) {
     
@@ -178,7 +181,8 @@ bool Game::run()
 	rightDown = false;
       }
   }
-  
+
+  /* Process mouse events if either mouse button is down. */
   if (leftDown || rightDown)
     {
       int x, y;
@@ -189,6 +193,15 @@ bool Game::run()
       if (rightDown)
 	this->rightClick(x, y);
     }
+
+  Uint32 time = SDL_GetTicks();
+  if (time - startTime > 3000)
+    {
+      printf("fps: %d\n", frames / 3);
+      frames = 0;
+      startTime = time;
+    }
+  frames++;
   
   this->update();
 
