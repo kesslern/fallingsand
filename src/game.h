@@ -15,8 +15,9 @@ public:
 
   int screenWidth;
   int screenHeight;
+  int currentFrame = 0;;
   Particle** particles;
- 
+
 private:
   /* Create walls. */
   void leftClick(int x, int y);

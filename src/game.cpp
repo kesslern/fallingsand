@@ -148,17 +148,17 @@ void Game::leftClick(int x, int y)
 
 void Game::calculateFps()
 {
-  static Uint32 frames = 0;
+  this->currentFrame++;
   static Uint32 startTime = SDL_GetTicks();
 
   Uint32 time = SDL_GetTicks();
   if (time - startTime > 3000)
     {
-      printf("fps: %d\n", frames / 3);
-      frames = 0;
+      printf("fps: %d\n", this->currentFrame / 3);
+      this->currentFrame = 0;
       startTime = time;
     }
-  frames++;
+  this->currentFrame++;
 }
 
 void Game::processEvents()
