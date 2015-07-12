@@ -8,7 +8,7 @@ int main()
   srand(time(NULL));
   Game game(800, 600);
 
-  while (game.run())
+  while (game.run()) {}
 
-    return 0;
+  return 0;
 }

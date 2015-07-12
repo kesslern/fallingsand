@@ -22,8 +22,10 @@ private:
   void leftClick(int x, int y);
   /* Delete particles. */
   void rightClick(int x, int y);
-   SDL_Window* window;
+  void calculateFps();
+  SDL_Window* window;
   SDL_Renderer* renderer;
+  Uint32 fps;
 };
 
 #endif
