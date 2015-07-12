@@ -3,9 +3,8 @@
 #include "game.h"
 #include "wall.h"
 #include "water.h"
+#include "sand.h"
 #include "particle.h"
-
-#define FLUTTER 3
 
 Game::Game(int width, int height)
 {
@@ -59,17 +58,34 @@ void Game::update()
   }
 
   /* Move paticles in each row except the bottom (since it's blank). */
-  for (int i = this->screenWidth * (this->screenHeight - 1); i >= 0; i--) {
-    if (particles[i])
-      particles[i]->move(i);
+  static bool loopDirectionToggle = false;
+
+  if (loopDirectionToggle) {
+    for (int i = this->screenWidth * (this->screenHeight - 1); i >= 0; i--) {
+      if (particles[i])
+	particles[i]->move();
+    }
+  } else {
+    for (int y = screenHeight - 1; y >= 0; y--) {
+      int offset = y * screenWidth;
+      for (int x = 0; x < screenWidth; x++) {
+	if (particles[offset + x])
+	  particles[offset + x]->move();
+	  
+      }
+    }
   }
 
+  loopDirectionToggle = !loopDirectionToggle;
+  
   /* Create some particles */
   int t = 0;
   while (t < this->screenWidth - 50) { 
         t += rand() % 50 + 1;
-	particles[t] = new Water();
-  }
+	if (rand() % 2 == 1) 
+	  particles[t] = new Water(t);
+	else
+	  particles[t] = new Sand(t);
 
   /* Draw each particle on the screen. */
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -117,7 +133,7 @@ void Game::leftClick(int x, int y)
 	if (particles[offset]) {
 	  delete particles[offset];
 	}
-	particles[offset] = new Wall();
+	particles[offset] = new Wall(offset);
       }
     }
   }
