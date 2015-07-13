@@ -10,7 +10,6 @@ class Game
 public:
   Game(int screenWidth, int screenHeight);
   ~Game();
-  void flutter(int i);
   bool run();
 
   int screenWidth;
