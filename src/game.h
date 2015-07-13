@@ -1,3 +1,4 @@
+
 #ifndef GAME_H
 #define GAME_H
 
@@ -15,7 +16,7 @@ public:
 
   int screenWidth;
   int screenHeight;
-  int currentFrame = 0;;
+  int currentFrame = 0;
   Particle** particles;
 
 private:
