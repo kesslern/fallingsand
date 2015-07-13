@@ -150,12 +150,13 @@ void Game::calculateFps()
 {
   this->currentFrame++;
   static Uint32 startTime = SDL_GetTicks();
-
+  static int lastFrameUpdate = this->currentFrame;
+  
   Uint32 time = SDL_GetTicks();
   if (time - startTime > 3000)
     {
-      printf("fps: %d\n", this->currentFrame / 3);
-      this->currentFrame = 0;
+      printf("fps: %d\n", (this->currentFrame - lastFrameUpdate) / 3);
+      lastFrameUpdate = this->currentFrame;;
       startTime = time;
     }
   this->currentFrame++;
