@@ -1,4 +1,5 @@
 #include "wall.h"
+#include "game.h"
 
 Wall::Wall(int idx)
 {
@@ -12,5 +13,6 @@ Wall::Wall(int idx)
 
 void Wall::move()
 {
+  this->lastUpdateFrame = Particle::game->currentFrame;
   return;
 }

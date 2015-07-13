@@ -148,7 +148,6 @@ void Game::leftClick(int x, int y)
 
 void Game::calculateFps()
 {
-  this->currentFrame++;
   static Uint32 startTime = SDL_GetTicks();
   static int lastFrameUpdate = this->currentFrame;
   
@@ -159,7 +158,6 @@ void Game::calculateFps()
       lastFrameUpdate = this->currentFrame;;
       startTime = time;
     }
-  this->currentFrame++;
 }
 
 void Game::processEvents()
@@ -209,6 +207,7 @@ void Game::processEvents()
 
 bool Game::run()
 {
+  this->currentFrame++;
   this->processEvents();
   this->calculateFps();
   this->update();

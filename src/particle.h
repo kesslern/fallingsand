@@ -13,6 +13,9 @@ public:
 
   /* Location of the particle in the particles array in the game. */
   int idx;
+
+  /* The last frame this particle was updated. */
+  int lastUpdateFrame = 0;
   
   /* Particle properties. */
   bool movable;
