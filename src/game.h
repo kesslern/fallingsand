@@ -10,7 +10,6 @@ class Game
 public:
   Game(int screenWidth, int screenHeight);
   ~Game();
-  void update();
   void flutter(int i);
   bool run();
 
@@ -28,6 +27,8 @@ private:
   void calculateFps();
   /* Process mouse buttons and key presses. */
   void processEvents();
+  /* Update all the particles on the screen. */
+  void update();
   
   SDL_Window* window;
   SDL_Renderer* renderer;
