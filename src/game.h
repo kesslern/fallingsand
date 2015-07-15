@@ -1,8 +1,9 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include <SDL2/SDL.h>
 class Particle;
+class SDL_Window;
+class SDL_Renderer;
 
 class Game
 {
@@ -13,7 +14,7 @@ public:
 
   int screenWidth;
   int screenHeight;
-  Uint32 currentFrame = 0;
+  unsigned int currentFrame = 0;
   Particle** particles;
 
 private:
@@ -30,7 +31,7 @@ private:
   
   SDL_Window* window;
   SDL_Renderer* renderer;
-  Uint32 fps;
+  int fps;
   bool quit = false;
 };
 
