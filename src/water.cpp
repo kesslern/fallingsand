@@ -12,16 +12,16 @@ Water::Water(int idx)
   this->r = 0;
   this->g = 0;
   this->b = 255;
-  this->lastUpdateFrame = Particle::game->currentFrame;
+  this->lastUpdateFrame = Particle::game->current_frame_;
 }
 
 void Water::move()
 {
-  if (this->lastUpdateFrame == Particle::game->currentFrame)
+  if (this->lastUpdateFrame == Particle::game->current_frame_)
     return;
 
-  this->lastUpdateFrame = Particle::game->currentFrame;
-  int screenWidth = Particle::game->screenWidth;
+  this->lastUpdateFrame = Particle::game->current_frame_;
+  int screenWidth = Particle::game->screen_width_;
   Particle** particles = Particle::game->particles;
 
   /* No bounds checking, watch out batman!!! */

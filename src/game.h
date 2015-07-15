@@ -8,13 +8,13 @@ class SDL_Renderer;
 class Game
 {
 public:
-  Game(int screenWidth, int screenHeight);
+  Game(int screen_width, int screen_height);
   ~Game();
   bool run();
 
-  int screenWidth;
-  int screenHeight;
-  unsigned int currentFrame = 0;
+  int screen_width_;
+  int screen_height_;
+  unsigned int current_frame_ = 0;
   Particle** particles;
 
 private:
@@ -29,10 +29,10 @@ private:
   /* Update all the particles on the screen. */
   void update();
   
-  SDL_Window* window;
-  SDL_Renderer* renderer;
-  int fps;
-  bool quit = false;
+  SDL_Window* window_;
+  SDL_Renderer* renderer_;
+  int fps_;
+  bool quit_ = false;
 };
 
 #endif

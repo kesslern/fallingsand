@@ -13,6 +13,6 @@ Wall::Wall(int idx)
 
 void Wall::move()
 {
-  this->lastUpdateFrame = Particle::game->currentFrame;
+  this->lastUpdateFrame = Particle::game->current_frame_;
   return;
 }

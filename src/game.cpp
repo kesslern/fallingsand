@@ -6,25 +6,25 @@
 #include "sand.h"
 #include "particle.h"
 
-Game::Game(int width, int height)
+Game::Game(int screen_width, int screen_height)
 {
+  this->screen_width_ = screen_width;
+  this->screen_height_ = screen_height;
+  
   /* Initialize SDL and get the renderer which we use to plot pixels.
    * Perform proper initializion checks too. */
   if (SDL_Init(SDL_INIT_VIDEO) < 0)
     throw -1;
 
-  SDL_CreateWindowAndRenderer(width, height, 0, &this->window, &this->renderer);
+  SDL_CreateWindowAndRenderer(screen_width_, screen_height_, 0, &window_, &renderer_);
   
-  if (this->window == nullptr)
+  if (window_ == nullptr)
     throw -2;
-  if (this->renderer == nullptr)
+  if (renderer_ == nullptr)
     throw -3;
   
-  this->screenWidth = width;
-  this->screenHeight = height;
-
   /* Allocate space for pointers to particle objects, one for each pixel on the screen. */
-  size_t numParticles = static_cast<size_t>(this->screenWidth * this->screenHeight);
+  size_t numParticles = static_cast<size_t>(screen_width_ * screen_height_);
   this->particles = static_cast<Particle**>(calloc(sizeof(Particle*),
 						   numParticles));
 
@@ -35,7 +35,7 @@ Game::Game(int width, int height)
 Game::~Game()
 {
   /* Delete any particles in the pointer array. */
-  for (int x = 0; x < this->screenWidth * this->screenHeight; x++) {
+  for (int x = 0; x < screen_width_ * screen_height_; x++) {
     if (this->particles[x]) {
        delete(particles[x]);
      }
@@ -43,15 +43,15 @@ Game::~Game()
   
   /* Free the pointer array and clean up SDL stuff. */
   free(this->particles);
-  SDL_DestroyWindow(window);
+  SDL_DestroyWindow(window_);
   SDL_Quit();
 }
 
 void Game::update()
 {
   /* Delete the last line of particles */
-  for (int x = 0; x < screenWidth; x++) {
-    int idx = (screenHeight - 1) * screenWidth + x;
+  for (int x = 0; x < screen_width_; x++) {
+    int idx = (screen_height_ - 1) * screen_width_ + x;
     if (this->particles[idx]) {
       delete(particles[idx]);
       particles[idx] = nullptr;
@@ -64,7 +64,7 @@ void Game::update()
   /* Just loop backwards through the array of particles half of the time. */
   if (loopDirectionToggle)
     {
-      for (int i = this->screenWidth * (this->screenHeight - 1); i >= 0; i--) {
+      for (int i = screen_width_ * (screen_height_ - 1); i >= 0; i--) {
 	if (particles[i])
 	  particles[i]->move();
       }
@@ -72,9 +72,9 @@ void Game::update()
   /* Otherwise, move right to left across each row from bottom to top. */
   else
     {
-    for (int y = screenHeight - 1; y >= 0; y--) {
-      int offset = y * screenWidth;
-      for (int x = 0; x < screenWidth; x++) {
+    for (int y = screen_height_ - 1; y >= 0; y--) {
+      int offset = y * screen_width_;
+      for (int x = 0; x < screen_width_; x++) {
 	if (particles[offset + x])
 	  particles[offset + x]->move();
 	  
@@ -86,7 +86,7 @@ void Game::update()
   
   /* Create some particles */
   int t = 0;
-  while (t < this->screenWidth - 50) { 
+  while (t < screen_width_ - 50) { 
         t += rand() % 50 + 1;
 	if (rand() % 2 == 1) 
 	  particles[t] = new Water(t);
@@ -95,24 +95,24 @@ void Game::update()
   }
 
   /* Draw each particle on the screen. */
-  SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-  SDL_RenderClear(renderer);
+  SDL_SetRenderDrawColor(renderer_, 0, 0, 0, 255);
+  SDL_RenderClear(renderer_);
   int i = 0; // so the offset doesn't have to be calculated on each loop
-  for (int y = 0; y < this->screenHeight; y++) {
-    for (int x = 0; x < this->screenWidth; x++) {
-      if (this->particles[i]) {
-	SDL_SetRenderDrawColor(renderer,
+  for (int y = 0; y < screen_height_; y++) {
+    for (int x = 0; x < screen_width_; x++) {
+      if (particles[i]) {
+	SDL_SetRenderDrawColor(renderer_,
 			       particles[i]->r,
 			       particles[i]->g,
 			       particles[i]->b,
 			       particles[i]->a);
-	SDL_RenderDrawPoint(this->renderer, x , y);
+	SDL_RenderDrawPoint(renderer_, x , y);
       }
       i++;
     }
   }
 
-  SDL_RenderPresent(renderer);
+  SDL_RenderPresent(renderer_);
   SDL_Delay(1);
 }
 
@@ -120,8 +120,8 @@ void Game::rightClick(int x, int y)
 {
   for (int xi = x - 5; xi < x + 5; xi++) {
     for (int yi = y - 5; yi < y + 5; yi++) {
-      if (xi > 0 && yi > 0 && xi < this->screenWidth && yi < this->screenHeight) {
-	int offset = yi * this->screenWidth + xi;
+      if (xi > 0 && yi > 0 && xi < screen_width_ && yi < screen_height_) {
+	int offset = yi * screen_width_ + xi;
 	if (particles[offset]) {
 	  delete particles[offset];
 	  particles[offset] = nullptr;
@@ -135,8 +135,8 @@ void Game::leftClick(int x, int y)
 {
   for (int xi = x - 5; xi < x + 5; xi++) {
     for (int yi = y - 5; yi < y + 5; yi++) {
-      if (xi > 0 && yi > 0 && xi < this->screenWidth && yi < this->screenHeight) {
-	int offset = yi * this->screenWidth + xi;
+      if (xi > 0 && yi > 0 && xi < screen_width_ && yi < screen_height_) {
+	int offset = yi * screen_width_ + xi;
 	if (particles[offset]) {
 	  delete particles[offset];
 	}
@@ -150,13 +150,13 @@ void Game::leftClick(int x, int y)
 void Game::calculateFps()
 {
   static Uint32 startTime = SDL_GetTicks();
-  static Uint32 lastFrameUpdate = this->currentFrame;
+  static Uint32 lastFrameUpdate = current_frame_;
   
   Uint32 time = SDL_GetTicks();
   if (time - startTime > 3000)
     {
-      printf("fps: %d\n", (this->currentFrame - lastFrameUpdate) / 3);
-      lastFrameUpdate = this->currentFrame;;
+      printf("fps: %d\n", (current_frame_ - lastFrameUpdate) / 3);
+      lastFrameUpdate = current_frame_;;
       startTime = time;
     }
 }
@@ -174,7 +174,7 @@ void Game::processEvents()
     
     if (e.type == SDL_QUIT)
       {
-	this->quit = true;
+	this->quit_ = true;
       }
     else if (e.type == SDL_MOUSEBUTTONDOWN)
       {
@@ -208,10 +208,10 @@ void Game::processEvents()
 
 bool Game::run()
 {
-  this->currentFrame++;
+  current_frame_++;
   this->processEvents();
   this->calculateFps();
   this->update();
 
-  return !this->quit;
+  return !quit_;
 }

@@ -9,16 +9,16 @@ Sand::Sand(int idx)
   this->r = 237;
   this->g = 201;
   this->b = 175;
-  this->lastUpdateFrame = Particle::game->currentFrame;
+  this->lastUpdateFrame = Particle::game->current_frame_;
 }
 
 void Sand::move()
 {
-  if (this->lastUpdateFrame == Particle::game->currentFrame)
+  if (this->lastUpdateFrame == Particle::game->current_frame_)
     return;
 
-  this->lastUpdateFrame = Particle::game->currentFrame;
-  int screenWidth = Particle::game->screenWidth;
+  this->lastUpdateFrame = Particle::game->current_frame_;
+  int screenWidth = Particle::game->screen_width_;
 
   /* No bounds checking, watch out batman!!! */
   
