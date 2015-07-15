@@ -3,7 +3,7 @@
 
 Wall::Wall(int idx)
 {
-  this->idx = idx;
+  this->array_index_ = idx;
   this->movable = false;
   this->liquid = false;
   this->r = 220;

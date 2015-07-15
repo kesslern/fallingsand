@@ -3,7 +3,7 @@
 
 Sand::Sand(int idx)
 {
-  this->idx = idx;
+  this->array_index_ = idx;
   this->movable = true;
   this->liquid = false;
   this->r = 237;
@@ -23,30 +23,30 @@ void Sand::move()
   /* No bounds checking, watch out batman!!! */
   
   /* Check below us for empty space. */
-  if (canSwapWith(idx + screenWidth))
+  if (canSwapWith(array_index_ + screenWidth))
     {
-      swapOrMoveTo(idx + screenWidth);
+      swapOrMoveTo(array_index_ + screenWidth);
     }
   /* Otherwise, if there is no particle  on either side, randomly flutter
    * to the left or right of that particle. */
-  else if (canSwapWith(idx + screenWidth - 1)
-	   && canSwapWith(idx + screenWidth + 1))
+  else if (canSwapWith(array_index_ + screenWidth - 1)
+	   && canSwapWith(array_index_ + screenWidth + 1))
     {
       if (rand() % 2 == 1) {
-        swapOrMoveTo(idx + screenWidth);
+        swapOrMoveTo(array_index_ + screenWidth);
       } else {
-        swapOrMoveTo(idx + screenWidth - 1);
+        swapOrMoveTo(array_index_ + screenWidth - 1);
       }
     }
   /* Move left if possible (right isn't empty). */
-  else if (canSwapWith(idx + screenWidth - 1))
+  else if (canSwapWith(array_index_ + screenWidth - 1))
     {
-      swapOrMoveTo(idx + screenWidth - 1);
+      swapOrMoveTo(array_index_ + screenWidth - 1);
     }
   /* Move right if possible (left isn't empty). */
-  else if (canSwapWith(idx + screenWidth + 1))
+  else if (canSwapWith(array_index_ + screenWidth + 1))
     {
-      swapOrMoveTo(idx + screenWidth + 1);
+      swapOrMoveTo(array_index_ + screenWidth + 1);
     }
 }
 
@@ -61,8 +61,8 @@ void Sand::swapOrMoveTo(int newIndex)
   /* Backup the old particle*/
   Particle* oldParticle = Particle::game->particles[newIndex];
   Particle::game->particles[newIndex] = this;
-  Particle::game->particles[this->idx] = oldParticle;;
+  Particle::game->particles[this->array_index_] = oldParticle;;
   if (oldParticle)
-    oldParticle->idx = this->idx;
-  this->idx = newIndex;
+    oldParticle->array_index_ = this->array_index_;
+  this->array_index_ = newIndex;
 }

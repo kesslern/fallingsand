@@ -12,10 +12,10 @@ public:
   virtual ~Particle();
 
   /* Location of the particle in the particles array in the game. */
-  int idx;
+  int array_index_;
 
   /* The last frame this particle was updated. */
-  int lastUpdateFrame = 0;
+  unsigned int lastUpdateFrame = 0;
   
   /* Particle properties. */
   bool movable;
