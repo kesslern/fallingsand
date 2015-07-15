@@ -13,7 +13,7 @@ public:
 
   int screenWidth;
   int screenHeight;
-  int currentFrame = 0;
+  Uint32 currentFrame = 0;
   Particle** particles;
 
 private:

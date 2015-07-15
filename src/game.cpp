@@ -24,8 +24,9 @@ Game::Game(int width, int height)
   this->screenHeight = height;
 
   /* Allocate space for pointers to particle objects, one for each pixel on the screen. */
-  this->particles = (Particle**) calloc(sizeof(Particle*),
-				        (size_t) (this->screenWidth * this->screenHeight));
+  size_t numParticles = static_cast<size_t>(this->screenWidth * this->screenHeight);
+  this->particles = static_cast<Particle**>(calloc(sizeof(Particle*),
+						   numParticles));
 
   /* This reference needs to be initialized so particles have information needed to move. */
   Particle::game = this;
@@ -149,7 +150,7 @@ void Game::leftClick(int x, int y)
 void Game::calculateFps()
 {
   static Uint32 startTime = SDL_GetTicks();
-  static int lastFrameUpdate = this->currentFrame;
+  static Uint32 lastFrameUpdate = this->currentFrame;
   
   Uint32 time = SDL_GetTicks();
   if (time - startTime > 3000)
@@ -177,7 +178,7 @@ void Game::processEvents()
       }
     else if (e.type == SDL_MOUSEBUTTONDOWN)
       {
-	int mask = SDL_GetMouseState(NULL, NULL);
+	Uint32 mask = SDL_GetMouseState(NULL, NULL);
 	if (mask & SDL_BUTTON_LEFT) {
 	  leftDown = true;
 	} else if (mask & SDL_BUTTON_X1) {
